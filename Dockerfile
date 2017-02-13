@@ -1,4 +1,12 @@
-FROM makevoid/ruby-2-3
+FROM makevoid/ruby2.3
+
+# install latest redis from ppa
+RUN apt-get update                                && \
+    apt-get install -y software-properties-common apt-utils && \
+    add-apt-repository ppa:chris-lea/redis-server && \
+    apt-get update                                && \
+    apt-get install -y redis-server
+
 
 # TODO: extract in its own container base image
 # TODO: install bitcoin-secp256k1 lib
@@ -17,12 +25,6 @@ RUN mkdir ~/tmp && cd ~/tmp && git clone https://github.com/bitcoin-core/secp256
 WORKDIR /app
 
 
-# install latest redis from ppa
-RUN apt-get update                                && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository ppa:chris-lea/redis-server && \
-    apt-get update                                && \
-    apt-get install -y redis-server
 
 
 
