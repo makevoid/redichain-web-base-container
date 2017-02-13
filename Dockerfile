@@ -1,4 +1,4 @@
-FROM ruby:2.3.3
+FROM makevoid/ruby-2-3
 
 # TODO: extract in its own container base image
 # TODO: install bitcoin-secp256k1 lib
@@ -16,9 +16,19 @@ RUN mkdir ~/tmp && cd ~/tmp && git clone https://github.com/bitcoin-core/secp256
 
 WORKDIR /app
 
+
+# install latest redis from ppa
+RUN apt-get update                                && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository ppa:chris-lea/redis-server && \
+    apt-get update                                && \
+    apt-get install -y redis-server
+
+
+
 # install gems manually for speeding up the build (remember to always bundle update your deps)
 #
-RUN gem install redis oj roda identicon haml puma concurrent-ruby bitcoin-ruby bitcoin ffi hashie inflecto sha3 rlp bitcoin-ruby bitcoin-secp256k1 hashie --no-ri --no-rdoc
+RUN gem install foreman redis oj roda identicon haml puma concurrent-ruby bitcoin-ruby bitcoin ffi hashie inflecto sha3 rlp bitcoin-ruby bitcoin-secp256k1 hashie honeybadger rspec httparty autotest rack-test rerun prawn prawn-table twilio-ruby scrypt mail --no-ri --no-rdoc
 
 
 # no CMD - this is a base container published to dockerhub, use FROM makevoid/redichain-web-base to extend from this
